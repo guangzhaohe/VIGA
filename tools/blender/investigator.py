@@ -14,6 +14,23 @@ from mcp.server.fastmcp import FastMCP
 from investigator_core import Investigator3D
 
 # Tool configuration for agent
+investigate_tool: Dict[str, object] = {
+    "type": "function",
+    "function": {
+        "name": "investigate",
+        "description": "Investigate the scene by the current camera. You can zoom, move, and focus on the object you want to investigate.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "operation": {"type": "string", "enum": ["zoom", "move", "focus"], "description": "The operation to perform."},
+                "object_name": {"type": "string", "description": "If the operation is focus, you need to provide the name of the object to focus on. The object must exist in the scene."},
+                "direction": {"type": "string", "enum": ["up", "down", "left", "right", "in", "out"], "description": "If the operation is move or zoom, you need to provide the direction to move or zoom."}
+            },
+            "required": ["operation"]
+        }
+    }
+}
+
 tool_configs: List[Dict[str, object]] = [
     {
         "type": "function",
@@ -162,11 +179,15 @@ def initialize(args: Dict[str, object]) -> Dict[str, object]:
             blender_script,
             str(args.get("gpu_devices"))
         )
+        if 'blender' in args.get("mode"):
+            active_tool_configs = [investigate_tool]
+        else:
+            active_tool_configs = tool_configs
         return {
             "status": "success",
             "output": {
                 "text": ["Investigator3D initialized successfully"],
-                "tool_configs": tool_configs
+                "tool_configs": active_tool_configs
             }
         }
     except Exception as e:

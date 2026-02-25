@@ -5,6 +5,7 @@ Loads BlenderGym dataset and runs the dual-agent system for 3D scene generation.
 """
 import os
 import sys
+import shutil
 import json
 import time
 import argparse
@@ -112,7 +113,10 @@ def run_blendergym_task(task_config: Dict, args: argparse.Namespace) -> Tuple[st
     
     # Create directories
     output_base.mkdir(parents=True, exist_ok=True)
-    
+
+    # copy blender file to output directory
+    shutil.copy(task_config["blender_file"], output_base / "blender_file.blend")
+
     # Build main.py command
     cmd = [
         sys.executable, "main.py",
@@ -132,8 +136,9 @@ def run_blendergym_task(task_config: Dict, args: argparse.Namespace) -> Tuple[st
         "--verifier-tools", args.verifier_tools,
         # Blender execution parameters (for generator)
         "--blender-command", args.blender_command,
-        "--blender-file", str(task_config["blender_file"]),
+        "--blender-file", str(output_base / "blender_file.blend"),
         "--blender-script", args.blender_script,
+        "--blender-save", str(output_base / "blender_file.blend"),
         "--gpu-devices", args.gpu_devices,
         "--clear-memory",
         "--num-candidates", str(args.num_candidates),

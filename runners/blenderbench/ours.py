@@ -95,12 +95,12 @@ def check_failed_tasks(test_output_dir: str) -> List[Dict]:
     print(f"Found {len(failed_tasks)} failed tasks")
     return failed_tasks
 
-def load_blendergym_dataset(base_path: str, task_name: str, task_id: Optional[str] = None) -> List[Dict]:
+def load_blenderbench_dataset(base_path: str, task_name: str, task_id: Optional[str] = None) -> List[Dict]:
     """
-    Load BlenderGym dataset structure.
+    Load BlenderBench dataset structure.
 
     Args:
-        base_path: Path to BlenderGym dataset root.
+        base_path: Path to BlenderBench dataset root.
         task_name: Name of the task type to load.
         task_id: Optional specific task ID to run.
 
@@ -111,7 +111,7 @@ def load_blendergym_dataset(base_path: str, task_name: str, task_id: Optional[st
     base_path = Path(base_path)
     
     if not base_path.exists():
-        print(f"Error: BlenderGym dataset path does not exist: {base_path}")
+        print(f"Error: BlenderBench dataset path does not exist: {base_path}")
         return tasks
     
     if task_name == 'all':
@@ -170,9 +170,9 @@ def load_blendergym_dataset(base_path: str, task_name: str, task_id: Optional[st
     
     return tasks
 
-def run_blendergym_task(task_config: Dict, args: argparse.Namespace) -> Tuple[str, bool, str]:
+def run_blenderbench_task(task_config: Dict, args: argparse.Namespace) -> Tuple[str, bool, str]:
     """
-    Run a single BlenderGym task using main.py
+    Run a single BlenderBench task using main.py
     
     Args:
         task_config: Task configuration dictionary
@@ -217,6 +217,7 @@ def run_blendergym_task(task_config: Dict, args: argparse.Namespace) -> Tuple[st
         "--blender-command", args.blender_command,
         "--blender-file", str(output_base / "blender_file.blend"),
         "--blender-script", args.blender_script,
+        "--blender-save", str(output_base / "blender_file.blend"),
         "--gpu-devices", args.gpu_devices,
         "--clear-memory",
         "--num-candidates", str(args.num_candidates),
@@ -268,7 +269,7 @@ def run_tasks_parallel(tasks: List[Dict], args: argparse.Namespace, max_workers:
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         # Submit all tasks
         future_to_task = {
-            executor.submit(run_blendergym_task, task_config, args): task_config 
+            executor.submit(run_blenderbench_task, task_config, args): task_config 
             for task_config in tasks
         }
         
@@ -353,7 +354,7 @@ def main() -> None:
         tasks = []
         for failed_config in failed_task_configs:
             # Load the specific task from dataset
-            retest_tasks = load_blendergym_dataset(args.dataset_path, failed_config["task_name"], failed_config["task_id"])
+            retest_tasks = load_blenderbench_dataset(args.dataset_path, failed_config["task_name"], failed_config["task_id"])
             if retest_tasks:
                 tasks.extend(retest_tasks)
                 print(f"Will retest: {failed_config['task_name']}{failed_config['task_id']}")
@@ -364,7 +365,7 @@ def main() -> None:
     else:
         # Normal execution - load dataset
         print(f"Loading BlenderBench dataset from: {args.dataset_path}")
-        tasks = load_blendergym_dataset(args.dataset_path, args.task, args.task_id)
+        tasks = load_blenderbench_dataset(args.dataset_path, args.task, args.task_id)
         
         if not tasks:
             print("No valid tasks found in dataset!")
@@ -404,7 +405,7 @@ def main() -> None:
         
         for i, task_config in enumerate(tasks, 1):
             print(f"\nTask {i}/{len(tasks)}")
-            task_name, success, error_msg = run_blendergym_task(task_config, args)
+            task_name, success, error_msg = run_blenderbench_task(task_config, args)
             
             if success:
                 successful_tasks += 1
