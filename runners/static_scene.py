@@ -43,7 +43,7 @@ def load_static_scene_dataset(base_path: str, task_name: str, setting: str, test
         task_dirs = [d for d in base_path.iterdir() if d.is_dir()]
         task_list = [d.name for d in task_dirs]
     else:
-        task_list = [task_name]
+        task_list = [task.strip() for task in task_name.split(",") if task.strip()]
     
     # Create task configurations
     for task in task_list:

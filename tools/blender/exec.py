@@ -10,6 +10,7 @@ import io
 import json
 import logging
 import os
+import shlex
 import shutil
 import subprocess
 from pathlib import Path
@@ -103,6 +104,7 @@ class Executor:
         script_save: str,
         render_save: str,
         blender_save: Optional[str] = None,
+        target_image_path: Optional[str] = None,
         gpu_devices: Optional[str] = None
     ) -> None:
         """Initialize the Blender executor.
@@ -114,6 +116,7 @@ class Executor:
             script_save: Directory to save scripts.
             render_save: Directory to save renders.
             blender_save: Optional path to save Blender state.
+            target_image_path: Optional target image path for render aspect ratio.
             gpu_devices: Optional GPU device IDs.
         """
         self.blender_command = blender_command
@@ -122,6 +125,7 @@ class Executor:
         self.script_path = Path(script_save)
         self.render_path = Path(render_save)
         self.blender_save = blender_save
+        self.target_image_path = target_image_path
         self.gpu_devices = gpu_devices
         self.count = 0
 
@@ -146,9 +150,11 @@ class Executor:
             "--python", self.blender_script,
             "--", script_path, render_path
         ]
-        if self.blender_save:
-            cmd.append(self.blender_save)
-        cmd_str = " ".join(cmd)
+        if self.blender_save or self.target_image_path:
+            cmd.append(self.blender_save or "")
+        if self.target_image_path:
+            cmd.append(self.target_image_path)
+        cmd_str = " ".join(shlex.quote(str(part)) for part in cmd)
         
         # Set environment variables to control GPU devices
         env = os.environ.copy()
@@ -278,6 +284,7 @@ def initialize(args: Dict[str, object]) -> Dict[str, object]:
             script_save=args.get("output_dir") + "/scripts",
             render_save=args.get("output_dir") + "/renders",
             blender_save=args.get("blender_save"),
+            target_image_path=args.get("target_image_path"),
             gpu_devices=args.get("gpu_devices")
         )
         if 'blender' in args.get("mode"):

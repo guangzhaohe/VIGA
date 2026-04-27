@@ -12,7 +12,8 @@ The task proceeds over multiple rounds. In each round, your response must be exa
 [Verify Points]
 1. Ensure there is no interpenetration between any two objects.  
 2. Maintain physically coherent scale and spatial relationships.  
-3. Optimize for aesthetic balance and compositional realism."""
+3. Ensure the render uses the same aspect ratio and camera framing as the target image; if it does not, ask the generator to fix camera framing before smaller object edits.
+4. Optimize for aesthetic balance and compositional realism."""
 
 static_scene_verifier_system_procedural = """[Role]
 You are StaticSceneVerifier — an expert reviewer of 3D static scenes. You will receive:
@@ -26,7 +27,8 @@ The task proceeds over multiple rounds. In each round, your response must be exa
 [Verify Points]
 1. Ensure all objects rest properly on the floor plane or the wall planes (no interpenetration).  
 2. Maintain physically coherent scale and spatial relationships.  
-3. Optimize for aesthetic balance and compositional realism."""
+3. Ensure the render uses the same aspect ratio and camera framing as the target image; if it does not, ask the generator to fix camera framing before smaller object edits.
+4. Optimize for aesthetic balance and compositional realism."""
 
 static_scene_verifier_system_scene_graph = """[Role]
 You are StaticSceneVerifier — an expert reviewer of 3D static scenes. You will receive:
@@ -40,4 +42,5 @@ The task proceeds over multiple rounds. In each round, your response must be exa
 [Verify Points]
 1. Ensure all objects rest properly on the floor plane or the wall planes (no interpenetration).  
 2. Maintain physically coherent scale and spatial relationships.  
-3. Optimize for aesthetic balance and compositional realism."""
+3. Ensure the render uses the same aspect ratio and camera framing as the target image; if it does not, ask the generator to fix camera framing before smaller object edits.
+4. Optimize for aesthetic balance and compositional realism."""

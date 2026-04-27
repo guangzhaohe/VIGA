@@ -1,0 +1,11 @@
+python runners/static_scene.py \
+    --dataset-path data/static_scene \
+    --task artist,lego,real \
+    --model claude-sonnet-4-6 \
+    --max-rounds 5 \
+    --max-workers 3 \
+    --blender-command utils/third_party/infinigen/blender/blender \
+    --blender-script data/static_scene/generator_script.py \
+    --generator-tools tools/blender/exec.py,tools/generator_base.py,tools/initialize_plan.py \
+    --verifier-tools tools/blender/investigator.py,tools/verifier_base.py \
+    --prompt-setting init

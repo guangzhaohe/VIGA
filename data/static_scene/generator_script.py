@@ -3,6 +3,59 @@ import bpy
 import os
 import sys
 
+
+def _resolve_target_image_path(target_image_path):
+    if not target_image_path:
+        return None
+    if os.path.isfile(target_image_path):
+        return target_image_path
+    if not os.path.isdir(target_image_path):
+        return None
+
+    preferred_names = (
+        "target.png",
+        "target.jpg",
+        "target.jpeg",
+        "visprompt1.png",
+        "style1.png",
+        "render1.png",
+    )
+    for name in preferred_names:
+        candidate = os.path.join(target_image_path, name)
+        if os.path.isfile(candidate):
+            return candidate
+
+    for name in sorted(os.listdir(target_image_path)):
+        if name.lower().endswith((".png", ".jpg", ".jpeg")):
+            return os.path.join(target_image_path, name)
+    return None
+
+
+def _set_render_resolution_from_target(target_image_path, long_side=512):
+    target_image_path = _resolve_target_image_path(target_image_path)
+    width = height = None
+    if target_image_path:
+        try:
+            image = bpy.data.images.load(target_image_path, check_existing=True)
+            width, height = image.size
+        except Exception as exc:
+            print(f"[WARN] Failed to read target image size from {target_image_path}: {exc}")
+
+    if not width or not height:
+        width = height = long_side
+
+    if width >= height:
+        resolution_x = long_side
+        resolution_y = max(1, round(long_side * height / width))
+    else:
+        resolution_x = max(1, round(long_side * width / height))
+        resolution_y = long_side
+
+    bpy.context.scene.render.resolution_x = int(resolution_x)
+    bpy.context.scene.render.resolution_y = int(resolution_y)
+    print(f"[INFO] Render resolution set to {resolution_x}x{resolution_y}")
+
+
 if __name__ == "__main__":
 
     code_fpath = sys.argv[6]  # Path to the code file
@@ -14,6 +67,10 @@ if __name__ == "__main__":
         save_blend = sys.argv[8] # Path to save the blend file
     else:
         save_blend = None
+    if len(sys.argv) > 9:
+        target_image_path = sys.argv[9] # Path to target image for aspect ratio
+    else:
+        target_image_path = None
 
     # Read and execute the code from the specified file
     with open(code_fpath, "r") as f:
@@ -40,9 +97,8 @@ if __name__ == "__main__":
     # Set the rendering device to GPU
     bpy.context.scene.cycles.device = 'GPU'
 
-    # Setting up rendering resolution
-    bpy.context.scene.render.resolution_x = 512
-    bpy.context.scene.render.resolution_y = 512
+    # Match target image aspect ratio with the longer side normalized to 512 px.
+    _set_render_resolution_from_target(target_image_path)
 
     # Set max samples to 1024
     bpy.context.scene.cycles.samples = 512
@@ -64,5 +120,4 @@ if __name__ == "__main__":
         bpy.context.preferences.filepaths.save_version = 0
         # Save the blend file
         bpy.ops.wm.save_as_mainfile(filepath=save_blend)
-
 

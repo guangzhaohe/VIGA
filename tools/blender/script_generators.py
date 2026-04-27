@@ -103,7 +103,7 @@ def generate_render_script() -> str:
     """Generate script to render the current scene.
 
     Renders the scene to RENDER_DIR/output.png using Cycles engine
-    at 512x512 resolution.
+    while preserving the scene aspect ratio with the longer side at 512.
 
     Returns:
         Blender Python script as a string.
@@ -116,8 +116,14 @@ render_dir = os.environ.get("RENDER_DIR", "/tmp")
 # Basic render settings
 bpy.context.scene.render.engine = 'CYCLES'
 bpy.context.scene.render.image_settings.file_format = 'PNG'
-bpy.context.scene.render.resolution_x = 512
-bpy.context.scene.render.resolution_y = 512
+width = max(1, bpy.context.scene.render.resolution_x)
+height = max(1, bpy.context.scene.render.resolution_y)
+if width >= height:
+    bpy.context.scene.render.resolution_x = 512
+    bpy.context.scene.render.resolution_y = max(1, round(512 * height / width))
+else:
+    bpy.context.scene.render.resolution_x = max(1, round(512 * width / height))
+    bpy.context.scene.render.resolution_y = 512
 
 # Single render
 bpy.context.scene.render.filepath = os.path.join(render_dir, "output.png")
@@ -184,8 +190,14 @@ constraint.up_axis = 'UP_Y'
 render_dir = os.environ.get("RENDER_DIR", "/tmp")
 bpy.context.scene.render.engine = 'CYCLES'
 bpy.context.scene.render.image_settings.file_format = 'PNG'
-bpy.context.scene.render.resolution_x = 512
-bpy.context.scene.render.resolution_y = 512
+width = max(1, bpy.context.scene.render.resolution_x)
+height = max(1, bpy.context.scene.render.resolution_y)
+if width >= height:
+    bpy.context.scene.render.resolution_x = 512
+    bpy.context.scene.render.resolution_y = max(1, round(512 * height / width))
+else:
+    bpy.context.scene.render.resolution_x = max(1, round(512 * width / height))
+    bpy.context.scene.render.resolution_y = 512
 bpy.context.scene.render.filepath = os.path.join(render_dir, "output.png")
 bpy.ops.render.render(write_still=True)
 
@@ -246,8 +258,14 @@ camera.rotation_euler = {rotation_euler}
 render_dir = os.environ.get("RENDER_DIR", "/tmp")
 bpy.context.scene.render.engine = 'CYCLES'
 bpy.context.scene.render.image_settings.file_format = 'PNG'
-bpy.context.scene.render.resolution_x = 512
-bpy.context.scene.render.resolution_y = 512
+width = max(1, bpy.context.scene.render.resolution_x)
+height = max(1, bpy.context.scene.render.resolution_y)
+if width >= height:
+    bpy.context.scene.render.resolution_x = 512
+    bpy.context.scene.render.resolution_y = max(1, round(512 * height / width))
+else:
+    bpy.context.scene.render.resolution_x = max(1, round(512 * width / height))
+    bpy.context.scene.render.resolution_y = 512
 bpy.context.scene.render.filepath = os.path.join(render_dir, "output.png")
 bpy.ops.render.render(write_still=True)
 
@@ -297,8 +315,14 @@ for obj in bpy.data.objects:
 render_dir = os.environ.get("RENDER_DIR", "/tmp")
 bpy.context.scene.render.engine = 'CYCLES'
 bpy.context.scene.render.image_settings.file_format = 'PNG'
-bpy.context.scene.render.resolution_x = 512
-bpy.context.scene.render.resolution_y = 512
+width = max(1, bpy.context.scene.render.resolution_x)
+height = max(1, bpy.context.scene.render.resolution_y)
+if width >= height:
+    bpy.context.scene.render.resolution_x = 512
+    bpy.context.scene.render.resolution_y = max(1, round(512 * height / width))
+else:
+    bpy.context.scene.render.resolution_x = max(1, round(512 * width / height))
+    bpy.context.scene.render.resolution_y = 512
 bpy.context.scene.render.filepath = os.path.join(render_dir, "output.png")
 bpy.ops.render.render(write_still=True)
 
@@ -361,8 +385,14 @@ camera.matrix_world.translation = new_pos
 render_dir = os.environ.get("RENDER_DIR", "/tmp")
 bpy.context.scene.render.engine = 'CYCLES'
 bpy.context.scene.render.image_settings.file_format = 'PNG'
-bpy.context.scene.render.resolution_x = 512
-bpy.context.scene.render.resolution_y = 512
+width = max(1, bpy.context.scene.render.resolution_x)
+height = max(1, bpy.context.scene.render.resolution_y)
+if width >= height:
+    bpy.context.scene.render.resolution_x = 512
+    bpy.context.scene.render.resolution_y = max(1, round(512 * height / width))
+else:
+    bpy.context.scene.render.resolution_x = max(1, round(512 * width / height))
+    bpy.context.scene.render.resolution_y = 512
 bpy.context.scene.render.filepath = os.path.join(render_dir, "output.png")
 bpy.ops.render.render(write_still=True)
 
@@ -406,8 +436,14 @@ scene.frame_set(target_frame)
 render_dir = os.environ.get("RENDER_DIR", "/tmp")
 bpy.context.scene.render.engine = 'CYCLES'
 bpy.context.scene.render.image_settings.file_format = 'PNG'
-bpy.context.scene.render.resolution_x = 512
-bpy.context.scene.render.resolution_y = 512
+width = max(1, bpy.context.scene.render.resolution_x)
+height = max(1, bpy.context.scene.render.resolution_y)
+if width >= height:
+    bpy.context.scene.render.resolution_x = 512
+    bpy.context.scene.render.resolution_y = max(1, round(512 * height / width))
+else:
+    bpy.context.scene.render.resolution_x = max(1, round(512 * width / height))
+    bpy.context.scene.render.resolution_y = 512
 bpy.context.scene.render.filepath = os.path.join(render_dir, "output.png")
 bpy.ops.render.render(write_still=True)
 
@@ -518,8 +554,14 @@ for i, pos in enumerate(camera_positions):
     # Render per viewpoint
     bpy.context.scene.render.engine = 'CYCLES'
     bpy.context.scene.render.image_settings.file_format = 'PNG'
-    bpy.context.scene.render.resolution_x = 512
-    bpy.context.scene.render.resolution_y = 512
+    width = max(1, bpy.context.scene.render.resolution_x)
+    height = max(1, bpy.context.scene.render.resolution_y)
+    if width >= height:
+        bpy.context.scene.render.resolution_x = 512
+        bpy.context.scene.render.resolution_y = max(1, round(512 * height / width))
+    else:
+        bpy.context.scene.render.resolution_x = max(1, round(512 * width / height))
+        bpy.context.scene.render.resolution_y = 512
     bpy.context.scene.render.filepath = os.path.join(render_dir, str(i+1)+".png")
     bpy.ops.render.render(write_still=True)
     
@@ -537,4 +579,3 @@ camera.rotation_euler = original_rotation
 
 print("Viewpoints initialized and rendered for", len(objects), "objects")
 '''
-

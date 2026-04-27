@@ -41,3 +41,7 @@ MODULARIZATION_PLAN.md
 
 # Unused assets
 docs/images/art.png
+data
+.cache
+.conda-envs
+.conda-pkgs
