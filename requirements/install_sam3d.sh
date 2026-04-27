@@ -3,7 +3,7 @@ conda install -c "nvidia/label/cuda-12.1.1" cuda-toolkit
 export CUDA_HOME=$CONDA_PREFIX
 export PATH=$CONDA_PREFIX/bin:$PATH
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
-export TORCH_CUDA_ARCH_LIST="9.0" # If your GPU=H100
+export TORCH_CUDA_ARCH_LIST="8.6,8.9" # If your GPU=H100
 conda install -c conda-forge gxx_linux-64=11 sysroot_linux-64=2.17
 pip install --no-build-isolation git+https://github.com/graphdeco-inria/diff-gaussian-rasterization.git@59f5f77e3ddbac3ed9db93ec2cfe99ed6c5d121d
 pip install --no-build-isolation git+https://github.com/NVlabs/nvdiffrast.git@253ac4fcea7de5f396371124af597e6cc957bfae

@@ -21,6 +21,7 @@ from utils._api_keys import (
     OPENAI_BASE_URL,
     QWEN_BASE_URL,
     VA_API_KEY,
+    QWEN_API_KEY,
 )
 
 def get_model_response(client: OpenAI, chat_args: Dict, num_candidates: int) -> List[Any]:
@@ -64,7 +65,7 @@ def build_client(model_name: str) -> OpenAI:
     elif "gemini" in model_name:
         return OpenAI(api_key=GEMINI_API_KEY, base_url=GEMINI_BASE_URL)
     elif "qwen" in model_name:
-        return OpenAI(api_key='not_used', base_url=QWEN_BASE_URL)
+        return OpenAI(api_key=QWEN_API_KEY, base_url=QWEN_BASE_URL)
     else:
         raise ValueError(f"Invalid model name: {model_name}")
     
@@ -78,7 +79,7 @@ def get_model_info(model_name: str) -> Dict[str, str]:
     elif "gemini" in model_name:
         return {"api_key": GEMINI_API_KEY, "base_url": GEMINI_BASE_URL}
     elif "qwen" in model_name:
-        return {"api_key": 'not_used', "base_url": QWEN_BASE_URL}
+        return {"api_key": QWEN_API_KEY, "base_url": QWEN_BASE_URL}
     else:
         raise ValueError(f"Invalid model name: {model_name}")
     
